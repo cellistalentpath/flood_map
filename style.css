@@ -1,18 +1,31 @@
-#map {
-	height: 400px; /* The height is 400 pixels */
-	width: 50%; /* The width is the width of the web page */
-	float: right;
-	border: 3px solid black;
+body {
+    background-color: rgb(25, 25, 25);
+    margin: 0 200px;
 }
 
 h3 {
-	border: 3px solid black;
+    border: 3px solid black;
+    color: rgb(200,200,200);
+    font-size: 36px;
+    text-align: center
 }
 
-#submit_address {
-	display: inline-block;
+#address-submit-container {
+    border: 3px solid black;
+    display: inline-block;
 }
 
-#address_add {
-	display: inline-block;
+#address-text {
+    font-size: 25px;
+}
+
+#submit-address-button {
+    font-size: 25px;
+}
+
+#map {
+    height: 500px; /* The height is 400 pixels */
+    width: 50%; /* The width is the width of the web page */
+    float: right;
+    border: 3px solid black;
 }

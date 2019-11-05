@@ -8,12 +8,11 @@
 h3 {
 	border: 3px solid black;
 }
-/* 
 
-|_|_|_|
-|_|X|_|
-|_|_|O|
+#submit_address {
+	display: inline-block;
+}
 
-
- */
-
+#address_add {
+	display: inline-block;
+}

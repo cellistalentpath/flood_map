@@ -6,6 +6,15 @@
 	</head>
 	<body>
 		<h3>My Google Maps Demo</h3>
+
+		<input type="text" placeholder="Address" id="addressText" />
+		<input
+			type="button"
+			id="submit_address"
+			onclick="addMarker()"
+			value="Submit"
+		/>
+
 		<!--The div element for the map -->
 		<div id="map"></div>
 		<!--Load the API from the specified URL
@@ -16,7 +25,7 @@
 		<script
 			async
 			defer
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvtKHrTzOogcqB471YQZDeyh0OTCvSt7c&callback=initMap"
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrhUvrwMun8LUY2L-g80qk3YNfu3BUcdY&callback=initMap"
 		></script>
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
 	</body>

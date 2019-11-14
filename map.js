@@ -118,7 +118,7 @@ function addMarker(address) {
           results[0].geometry.location.lat() +
           "," +
           results[0].geometry.location.lng() +
-          "&key=AIzaSyDrhUvrwMun8LUY2L-g80qk3YNfu3BUcdY";
+          "&key=API_KEY_HERE";
         //console.log(reverseGeo);
 
         const formatted = formatAddress(reverseGeo);

@@ -1,6 +1,6 @@
 // Initialize and add the map
 let map;
-const url = "https://99.26.184.205:4243";
+const url = "http://99.26.184.205:4243";
 let heldAddresses = {};
 let markerArray = [];
 let markerLatLngArray = [];

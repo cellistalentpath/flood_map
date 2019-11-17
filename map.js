@@ -2,6 +2,8 @@
 let map;
 const url = "http://localhost:3200";
 let heldAddresses = {};
+let markerArray = [];
+let markerLatLngArray = [];
 
 function initMap() {
   var geoC = new google.maps.Geocoder();
@@ -26,18 +28,21 @@ function initMap() {
   }
   // Ask company at start of use where their location is
   codeAddress("1400 S Post Oak, Houston, TX");
+
   // Let google map load
   new google.maps.event.addDomListener(window, "load", getData);
 
-  // CHECK FOR EXISTING ADDRESSES
-  // DON'T WANT TO CREATE "NEW MARKERS" EVERYTIME
-  // STORE IN ARRAY?
-
-  // Pull addresses every minute, same as onedrive update rate
-  // setInterval(() => {
-  //   getData();
-  // }, 30000);
+  // Pull addresses every 15 seconds, onedrive updates every minute
+  setInterval(() => {
+    getData();
+  }, 15000);
 }
+
+getData = () => {
+  getEverything().then(addresses => {
+    addMarker(addresses);
+  });
+};
 
 async function getEverything() {
   let addresses;
@@ -52,12 +57,6 @@ async function getEverything() {
   }
 }
 
-getData = () => {
-  getEverything().then(addresses => {
-    addMarker(addresses);
-  });
-};
-
 addMarker = addressArray => {
   let geoC = new google.maps.Geocoder();
   for (const address in addressArray) {
@@ -66,64 +65,98 @@ addMarker = addressArray => {
         address: address
       },
       function(results, status) {
-        const addressHeld = addressArray[address];
+        const id = addressArray[address].idValue;
         const formattedHeld = results[0].formatted_address;
-        let inside = addressArray[address].insideDMGValue;
-        let parking = addressArray[address].parkingDMGValue;
-        if (heldAddresses[formattedHeld] === undefined) {
-          heldAddresses[formattedHeld] = {
-            addressHeld,
+        const inside = addressArray[address].insideDMGValue;
+        const parking = addressArray[address].parkingDMGValue;
+
+        if (heldAddresses[id] === undefined) {
+          heldAddresses[id] = {
+            formattedHeld,
             inside,
             parking
           };
-        } else {
-          inside = inside + heldAddresses[formattedHeld].inside;
-          parking = parking + heldAddresses[formattedHeld].parking;
-          heldAddresses[formattedHeld] = { addressHeld, inside, parking };
         }
 
-        //console.log(heldAddresses);
-        // for (i = 0; i < heldAddresses.length; i++) {
+        let totalInside = 0;
+        let totalParking = 0;
+        let totalFlood = 0;
 
-        // }
-        if (status == "OK") {
-          var image = {
-            url: "./good.png",
-            scaledSize: new google.maps.Size(25, 25)
-          };
+        for (const id in heldAddresses) {
           if (
-            heldAddresses[formattedHeld].inside +
-              heldAddresses[formattedHeld].parking >
-            0
+            heldAddresses[id].formattedHeld === results[0].formatted_address
           ) {
+            totalInside += heldAddresses[id].inside;
+            totalParking += heldAddresses[id].parking;
+          }
+        }
+        totalFlood = totalInside + totalParking;
+
+        if (status == "OK") {
+          let image;
+
+          if (totalFlood < 0) {
+            image = {
+              url: "./good.png",
+              scaledSize: new google.maps.Size(25, 25)
+            };
+          } else if (totalFlood > 0) {
             image = {
               url: "./bad.png",
               scaledSize: new google.maps.Size(25, 25)
             };
-          } else if (
-            heldAddresses[formattedHeld].inside +
-              heldAddresses[formattedHeld].parking ===
-            0
-          ) {
+          } else if (totalFlood === 0) {
             image = {
               url: "./okay.png",
               scaledSize: new google.maps.Size(25, 25)
             };
           }
 
-          var marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location,
-            icon: image,
-            animation: google.maps.Animation.NONE
-          });
-          const infowindow = new google.maps.InfoWindow({
-            content: results[0].formatted_address
-          });
+          if (
+            isLocationFree([
+              results[0].geometry.location.lat(),
+              results[0].geometry.location.lng()
+            ])
+          ) {
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location,
+              icon: image,
+              animation: google.maps.Animation.NONE
+            });
+            markerArray.push(marker);
+            markerLatLngArray.push([
+              results[0].geometry.location.lat(),
+              results[0].geometry.location.lng()
+            ]);
 
-          marker.addListener("click", function() {
-            infowindow.open(map, marker);
-          });
+            const infowindow = new google.maps.InfoWindow({
+              content: results[0].formatted_address
+            });
+
+            marker.addListener("click", function() {
+              infowindow.open(map, marker);
+            });
+          } else {
+            for (i = 0; i < markerArray.length; i++) {
+              if (
+                markerArray[i].position.lat() ===
+                  results[0].geometry.location.lat() &&
+                markerArray[i].position.lng() ===
+                  results[0].geometry.location.lng() &&
+                image.url !== markerArray[i].getIcon().url
+              ) {
+                console.log(
+                  "marker's current icon: " + markerArray[0].getIcon().url
+                );
+                console.log("marker's new icon: " + image.url);
+                console.log(
+                  results[0].formatted_address + " is changing icon!"
+                );
+                markerArray[i].setIcon(image);
+              }
+            }
+          }
         } else {
           console.log("This didnt work: " + status);
           return null;
@@ -131,4 +164,16 @@ addMarker = addressArray => {
       }
     );
   }
+};
+
+isLocationFree = LatLng => {
+  for (i = 0; i < markerLatLngArray.length; i++) {
+    if (
+      markerLatLngArray[i][0] === LatLng[0] &&
+      markerLatLngArray[i][1] === LatLng[1]
+    ) {
+      return false;
+    }
+  }
+  return true;
 };

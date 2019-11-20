@@ -135,9 +135,15 @@ addMarker = (id, addressArray) => {
             results[0].geometry.location.lat(),
             results[0].geometry.location.lng()
           ]);
-
+          let encoded = results[0].formatted_address.replace(/ /g, "+");
+          encoded = encoded.replace(/,/g, "");
+          let search = "https://google.com/search?q=" + encoded;
+          let testthis =
+            "<div>" +
+            `<a href=${search} > ${results[0].formatted_address} </a>` +
+            "<div>";
           const infowindow = new google.maps.InfoWindow({
-            content: results[0].formatted_address
+            content: testthis //results[0].formatted_address
           });
 
           marker.addListener("click", function() {

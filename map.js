@@ -202,4 +202,4 @@ isLocationFree = (LatLng, array_of_lat_lng) => {
   return true;
 };
 
-module.exports = { isLocationFree, getEverything, addMarker };
+//module.exports = { isLocationFree, getEverything, addMarker };

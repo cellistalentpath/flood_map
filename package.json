@@ -1,0 +1,29 @@
+{
+  "name": "flood_map",
+  "version": "1.0.0",
+  "description": "",
+  "main": "map-styles.js",
+  "scripts": {
+    "test":   "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cellistalentpath/flood_map.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cellistalentpath/flood_map/issues"
+  },
+  "homepage": "https://github.com/cellistalentpath/flood_map#readme",
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "jest-fetch-mock": "^2.1.2"
+  },
+  "jest": {
+    "automock": false,
+    "setupFiles": [
+      "./setupJest.js"
+    ]
+  }
+}

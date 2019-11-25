@@ -1,11 +1,12 @@
 // Initialize and add the map
 let map;
-const url = "http://99.26.184.205:4243"; //"http://localhost:4243"
+const url = "http://99.26.184.205:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
 let heldAddresses = {};
 let markerArray = [];
 let markerLatLngArray = [];
 let go = true;
-let counter = 10;
+let counter = 0;
+let addressesLength = 0;
 
 function initMap() {
   var geoC = new google.maps.Geocoder();
@@ -22,6 +23,16 @@ function initMap() {
             center: results[0].geometry.location,
             styles: styles
           });
+          let comp_logo = {
+            url: "./tp-logo.png",
+            scaledSize: new google.maps.Size(40, 40)
+          };
+          let marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location,
+            icon: comp_logo,
+            animation: google.maps.Animation.NONE
+          });
         } else {
           console.log("This didnt work" + status);
         }
@@ -29,28 +40,31 @@ function initMap() {
     );
   }
   // Ask company at start of use where their location is
-  codeAddress("1400 S Post Oak, Houston, TX");
+  codeAddress("1400 Post Oak Blvd Suite 200, Houston, TX 77056");
 
   // Let google map load
   new google.maps.event.addDomListener(window, "load", getData);
 
-  // Pull addresses every 10 seconds, onedrive updates every minute
-
+  // Pull addresses once, must refresh to get new addresses
   setInterval(() => {
     go = true;
   }, 50);
 
   setInterval(() => {
-    getData();
+    if (counter < addressesLength) {
+      getData();
+    }
   }, 1000);
 }
 
 getData = () => {
   getEverything().then(addresses => {
+    addressesLength = Object.keys(addresses).length;
     for (id in addresses) {
       if (heldAddresses[id] === undefined && go) {
         addMarker(id, addresses);
         go = false;
+        counter++;
       }
     }
   });
@@ -119,10 +133,13 @@ addMarker = (id, addressArray) => {
         }
 
         if (
-          isLocationFree([
-            results[0].geometry.location.lat(),
-            results[0].geometry.location.lng()
-          ])
+          isLocationFree(
+            [
+              results[0].geometry.location.lat(),
+              results[0].geometry.location.lng()
+            ],
+            markerLatLngArray
+          )
         ) {
           var marker = new google.maps.Marker({
             map: map,
@@ -135,21 +152,24 @@ addMarker = (id, addressArray) => {
             results[0].geometry.location.lat(),
             results[0].geometry.location.lng()
           ]);
+
           let encoded = results[0].formatted_address.replace(/ /g, "+");
           encoded = encoded.replace(/,/g, "");
           let search = "https://google.com/search?q=" + encoded;
-          let testthis =
+          let address_goog_link =
             "<div>" +
-            `<a href=${search} > ${results[0].formatted_address} </a>` +
+            `<a href=${search} target = "_blank"> ${results[0].formatted_address} </a>` +
             "<div>";
+
           const infowindow = new google.maps.InfoWindow({
-            content: testthis //results[0].formatted_address
+            content: address_goog_link
           });
 
           marker.addListener("click", function() {
             infowindow.open(map, marker);
           });
         } else {
+          // Location already has marker, check if icon should be updated
           for (i = 0; i < markerArray.length; i++) {
             if (
               markerArray[i].position.lat() ===
@@ -170,14 +190,16 @@ addMarker = (id, addressArray) => {
   );
 };
 
-isLocationFree = LatLng => {
-  for (i = 0; i < markerLatLngArray.length; i++) {
+isLocationFree = (LatLng, array_of_lat_lng) => {
+  for (i = 0; i < array_of_lat_lng.length; i++) {
     if (
-      markerLatLngArray[i][0] === LatLng[0] &&
-      markerLatLngArray[i][1] === LatLng[1]
+      array_of_lat_lng[i][0] === LatLng[0] &&
+      array_of_lat_lng[i][1] === LatLng[1]
     ) {
       return false;
     }
   }
   return true;
 };
+
+module.exports = { isLocationFree, getEverything, addMarker };

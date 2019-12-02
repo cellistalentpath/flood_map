@@ -1,6 +1,6 @@
 // Initialize and add the map
 let map;
-const url = "http://99.26.184.205:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
+const url = "http://localhost:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
 let heldAddresses = {};
 let markerArray = [];
 let markerLatLngArray = [];
@@ -155,6 +155,24 @@ function addExisting(address) {
     position: address.latlng,
     icon: image,
     animation: google.maps.Animation.NONE
+  });
+  markerArray.push(marker);
+  markerLatLngArray.push([address.latlng.lat, address.latlng.lng]);
+
+  let encoded = address.formattedHeld.replace(/ /g, "+");
+  encoded = encoded.replace(/,/g, "");
+  let search = "https://google.com/search?q=" + encoded;
+  let address_goog_link =
+    "<div>" +
+    `<a href=${search} target = "_blank"> ${address.formattedHeld} </a>` +
+    "<div>";
+
+  const infowindow = new google.maps.InfoWindow({
+    content: address_goog_link
+  });
+
+  marker.addListener("click", function() {
+    infowindow.open(map, marker);
   });
 }
 

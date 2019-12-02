@@ -1,12 +1,13 @@
 // Initialize and add the map
 let map;
-const url = "http://99.26.184.205:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
+const url = "http://localhost:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
 let heldAddresses = {};
 let markerArray = [];
 let markerLatLngArray = [];
 let go = true;
 let counter = 0;
-let addressesLength = 0;
+let addressesLength = 1;
+let nextAddress = 0;
 
 function initMap() {
   var geoC = new google.maps.Geocoder();
@@ -19,7 +20,7 @@ function initMap() {
       function(results, status) {
         if (status === "OK") {
           map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 8,
+            zoom: 12,
             center: results[0].geometry.location,
             styles: styles
           });
@@ -43,32 +44,53 @@ function initMap() {
   codeAddress("1400 Post Oak Blvd Suite 200, Houston, TX 77056");
 
   // Let google map load
-  new google.maps.event.addDomListener(window, "load", getData);
+  new google.maps.event.addDomListener(window, "load", doIT);
 
   // Pull addresses once, must refresh to get new addresses
+
   setInterval(() => {
     go = true;
   }, 50);
-
-  setInterval(() => {
-    if (counter < addressesLength) {
-      getData();
-    }
-  }, 1000);
 }
 
-getData = () => {
-  getEverything().then(addresses => {
-    addressesLength = Object.keys(addresses).length;
-    for (id in addresses) {
-      if (heldAddresses[id] === undefined && go) {
-        addMarker(id, addresses);
-        go = false;
-        counter++;
-      }
+doIT = () => {
+  getFormatted().then(data => {
+    for (address in data) {
+      addExisting(data[address]);
+      heldAddresses[data[address].id] = data[address];
     }
   });
+  setInterval(() => {
+    if (counter < addressesLength) {
+      getFormatted().then(data => {
+        getEverything().then(addresses => {
+          addressesLength = Object.keys(addresses).length;
+          if (addressesLength != Object.keys(data).length) {
+            for (id in addresses) {
+              if (heldAddresses[id] === undefined && go) {
+                addMarker(id, addresses);
+                go = false;
+                counter++;
+              }
+            }
+          }
+        });
+      });
+    }
+  }, 1000);
 };
+
+// getData = () => {
+//   getEverything().then(addresses => {
+//     addressesLength = Object.keys(addresses).length;
+//     for (id in addresses) {
+//       if (heldAddresses[id] === undefined && go) {
+//         addMarker(id, addresses);
+//         go = false;
+//       }
+//     }
+//   });
+// };
 
 async function getEverything() {
   let addresses;
@@ -83,6 +105,59 @@ async function getEverything() {
   }
 }
 
+async function getFormatted() {
+  let addresses;
+  try {
+    const response = await fetch(url + "/map/formatted");
+    addresses = await response.text();
+    //console.log(addresses);
+    addresses = JSON.parse(addresses);
+    return addresses;
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+}
+
+async function putFormatted(newObj) {
+  try {
+    await fetch(url + "/map/formatted", {
+      method: "POST",
+      body: newObj
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    return null;
+  }
+}
+
+function addExisting(address) {
+  let image;
+  let totalFlood = address.totalFlood;
+  if (totalFlood < 0) {
+    image = {
+      url: "./good.png",
+      scaledSize: new google.maps.Size(25, 25)
+    };
+  } else if (totalFlood > 0) {
+    image = {
+      url: "./bad.png",
+      scaledSize: new google.maps.Size(25, 25)
+    };
+  } else if (totalFlood === 0) {
+    image = {
+      url: "./okay.png",
+      scaledSize: new google.maps.Size(25, 25)
+    };
+  }
+  var marker = new google.maps.Marker({
+    map: map,
+    position: address.latlng,
+    icon: image,
+    animation: google.maps.Animation.NONE
+  });
+}
+
 addMarker = (id, addressArray) => {
   let geoC = new google.maps.Geocoder();
   geoC.geocode(
@@ -90,10 +165,11 @@ addMarker = (id, addressArray) => {
       address: addressArray[id].addressValue
     },
     function(results, status) {
-      console.log(results[0].formatted_address);
       const formattedHeld = results[0].formatted_address;
       const inside = addressArray[id].insideDMGValue;
       const parking = addressArray[id].parkingDMGValue;
+      const latlng = results[0].geometry.location;
+
       heldAddresses[id] = {
         formattedHeld,
         inside,
@@ -111,6 +187,8 @@ addMarker = (id, addressArray) => {
         }
       }
       totalFlood = totalInside + totalParking;
+
+      putFormatted(JSON.stringify({ id, formattedHeld, totalFlood, latlng }));
 
       if (status === "OK") {
         let image;

@@ -2,6 +2,7 @@
 let map;
 var geoC;
 const url = "https://flood-map42.herokuapp.com"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243
+const formURL = "https://flood-data.herokuapp.com";
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];
@@ -96,7 +97,7 @@ async function getEverything() {
 async function getFormatted() {
   let addresses;
   try {
-    const response = await fetch(url + "/map/formatted");
+    const response = await fetch(formURL + "/map/formatted");
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;
@@ -108,7 +109,7 @@ async function getFormatted() {
 
 async function putFormatted(newObj) {
   try {
-    await fetch(url + "/map/formatted", {
+    await fetch(formURL + "/map/formatted", {
       method: "POST",
       body: newObj
     });

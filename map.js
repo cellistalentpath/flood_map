@@ -260,6 +260,7 @@ function addNewMarker(id, addressArray) {
         totalParking,
         totalResidents
       };
+      console.log(heldAddresses[id]);
 
       totalFlood = totalInside + totalParking;
 
@@ -383,7 +384,7 @@ function changeLocation(location) {
       if (status === "OK") {
         map.setCenter(results[0].geometry.location);
         document.getElementById("title").innerHTML =
-          "Flooded housing data for " +
+          "Flooded Housing Data for " +
           location.substring(0, location.indexOf(","));
       } else {
         console.log("This didnt work" + status);

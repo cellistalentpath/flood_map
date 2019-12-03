@@ -40,7 +40,7 @@ function initMap() {
       }
     );
   }
-  // Ask company at start of use where their location is
+  // Companies main office goes here
   codeAddress("1400 Post Oak Blvd Suite 200, Houston, TX 77056");
 
   // Let google map load

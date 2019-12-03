@@ -4,7 +4,7 @@
   "description": "",
   "main": "map-styles.js",
   "scripts": {
-    "test":   "jest"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -25,5 +25,8 @@
     "setupFiles": [
       "./setupJest.js"
     ]
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }

@@ -4,6 +4,7 @@ var geoC;
 const url = "https://flood-map42.herokuapp.com"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243
 let heldAddresses = {};
 let markerArray = [];
+let infoWindowArray = [];
 let markerLatLngArray = [];
 let go = true;
 let counter = 0;
@@ -212,8 +213,11 @@ function addExistingMarker(address, addressObject) {
     const infowindow = new google.maps.InfoWindow({
       content: address_goog_link + insideHTML + parkingHTML
     });
-
+    infoWindowArray.push(infowindow);
     marker.addListener("click", function() {
+      for (i = 0; i < infoWindowArray.length; i++) {
+        infoWindowArray[i].close();
+      }
       infowindow.open(map, marker);
     });
   } else {
@@ -351,8 +355,11 @@ function addNewMarker(id, addressArray) {
         const infowindow = new google.maps.InfoWindow({
           content: address_goog_link + insideHTML + parkingHTML
         });
-
+        infoWindowArray.push(infowindow);
         marker.addListener("click", function() {
+          for (i = 0; i < infoWindowArray.length; i++) {
+            infoWindowArray[i].close();
+          }
           infowindow.open(map, marker);
         });
       } else {

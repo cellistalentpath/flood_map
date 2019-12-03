@@ -20,22 +20,39 @@
       target="_blank"
       >Click here to take survey!</a
     > -->
-
-    <h3>Flooded Housing Data for Houston</h3>
-    <div class="dropdown">
-      <button
-        class="btn btn-primary dropdown-toggle"
-        type="button"
-        data-toggle="dropdown"
-      >
-        Company Location <span class="caret"></span>
-      </button>
-      <ul class="dropdown-menu">
-        <li><a href="#">Houston, TX</a></li>
-        <li><a href="#">Los Angeles, CA</a></li>
-        <li><a href="#">Washington, DC</a></li>
-        <li><a href="#">Atlanta, GA</a></li>
-      </ul>
+    <div id="heading">
+      <h3 id="title">Flooded Housing Data for Houston</h3>
+      <div class="dropdown">
+        <button
+          class="btn btn-primary dropdown-toggle"
+          type="button"
+          data-toggle="dropdown"
+        >
+          Company Location <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+          <li>
+            <a
+              href="#"
+              onclick="changeLocation('1400 Post Oak Blvd Suite 200, Houston, TX 77056')"
+              >Houston, TX</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="changeLocation('Los Angeles, CA')"
+              >Los Angeles, CA</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="changeLocation('Washington, DC')"
+              >Washington, DC</a
+            >
+          </li>
+          <li>
+            <a href="#" onclick="changeLocation('Atlanta, GA')">Atlanta, GA</a>
+          </li>
+        </ul>
+      </div>
     </div>
 
     <!--The div element for the map -->

@@ -2,16 +2,25 @@ body {
   background-color: rgb(190, 190, 190);
 }
 
+/* #heading {
+  /* float: left; */
+/* display: inline-block; */
+/* width: 100%; 
+  border: 3px solid black;
+} */
+
 h3 {
+  /* float: left; */
   /* border: 3px solid black; */
-  padding: 10px;
   font-size: 4.5vh;
   text-align: center;
+  width: 50%;
+  margin: 0 auto;
 }
 
 #map {
   width: 100%;
-  height: 80vh;
+  height: 83vh;
   position: fixed;
   padding: 0;
   margin: 0 auto;
@@ -21,6 +30,12 @@ h3 {
 }
 
 .dropdown {
+  /* clear: left; */
+  /* position: fixed; */
+  /* float: right; */
+  /* right: 0;*/
   float: right;
+  /* border: 3px solid black; */
+  /* float: right; */
   padding: 5px;
 }

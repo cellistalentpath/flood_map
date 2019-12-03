@@ -1,16 +1,16 @@
 // Initialize and add the map
 let map;
-const url = "http://99.26.184.205:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
+var geoC;
+const url = "http://localhost:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243";
 let heldAddresses = {};
 let markerArray = [];
 let markerLatLngArray = [];
 let go = true;
 let counter = 0;
 let addressesLength = 1;
-let nextAddress = 0;
 
 function initMap() {
-  var geoC = new google.maps.Geocoder();
+  geoC = new google.maps.Geocoder();
   function codeAddress(addressIn) {
     var address = addressIn;
     geoC.geocode(
@@ -46,8 +46,7 @@ function initMap() {
   // Let google map load
   new google.maps.event.addDomListener(window, "load", doIT);
 
-  // Pull addresses once, must refresh to get new addresses
-
+  // Used to stagger geocoding requests
   setInterval(() => {
     go = true;
   }, 50);
@@ -55,9 +54,8 @@ function initMap() {
 
 doIT = () => {
   getFormatted().then(data => {
-    //console.log(data);
     for (address in data) {
-      addExisting(data[address], data);
+      addExistingMarker(data[address], data);
       heldAddresses[data[address].id] = data[address];
     }
   });
@@ -69,7 +67,7 @@ doIT = () => {
           if (addressesLength != Object.keys(data).length) {
             for (id in addresses) {
               if (heldAddresses[id] === undefined && go) {
-                addMarker(id, addresses);
+                addNewMarker(id, addresses);
                 go = false;
                 counter++;
               }
@@ -80,18 +78,6 @@ doIT = () => {
     }
   }, 2000);
 };
-
-// getData = () => {
-//   getEverything().then(addresses => {
-//     addressesLength = Object.keys(addresses).length;
-//     for (id in addresses) {
-//       if (heldAddresses[id] === undefined && go) {
-//         addMarker(id, addresses);
-//         go = false;
-//       }
-//     }
-//   });
-// };
 
 async function getEverything() {
   let addresses;
@@ -111,7 +97,6 @@ async function getFormatted() {
   try {
     const response = await fetch(url + "/map/formatted");
     addresses = await response.text();
-    //console.log(addresses);
     addresses = JSON.parse(addresses);
     return addresses;
   } catch (error) {
@@ -132,12 +117,11 @@ async function putFormatted(newObj) {
   }
 }
 
-function addExisting(address, addressObject) {
+function getMarkerIcon(totalFlood) {
   let image = {
     url: "./bad.png",
     scaledSize: new google.maps.Size(25, 25)
   };
-  let totalFlood = address.totalFlood;
   if (totalFlood < 0) {
     image = {
       url: "./good.png",
@@ -149,15 +133,35 @@ function addExisting(address, addressObject) {
       scaledSize: new google.maps.Size(25, 25)
     };
   }
+  return image;
+}
+
+function addExistingMarker(address, addressObject) {
+  let totalFlood = 0;
+  let insidePercentage;
+  let parkingPercentage;
+  let insideHTML;
+  let parkingHTML;
+  let trueInside = 0;
+  let trueParking = 0;
+  for (id in addressObject) {
+    if (addressObject[id].formattedHeld === address.formattedHeld) {
+      trueInside += addressObject[id].totalInside;
+      trueParking += addressObject[id].totalParking;
+    }
+  }
+  totalFlood = trueInside + trueParking;
+
   if (
     isLocationFree([address.latlng.lat, address.latlng.lng], markerLatLngArray)
   ) {
     var marker = new google.maps.Marker({
       map: map,
       position: address.latlng,
-      icon: image,
+      icon: getMarkerIcon(totalFlood),
       animation: google.maps.Animation.NONE
     });
+
     markerArray.push(marker);
     markerLatLngArray.push([address.latlng.lat, address.latlng.lng]);
 
@@ -169,25 +173,7 @@ function addExisting(address, addressObject) {
       `<a href=${search} target = "_blank"> ${address.formattedHeld} </a>` +
       "<div>";
 
-    let insidePercentage;
-    let parkingPercentage;
-    let insideHTML;
-    let parkingHTML;
-    let trueInside = 0;
-    let trueParking = 0;
-    for (id in addressObject) {
-      if (addressObject[id].formattedHeld === address.formattedHeld) {
-        trueInside += addressObject[id].totalInside;
-        trueParking += addressObject[id].totalParking;
-        // console.log(
-        //   address.formattedHeld + ": " + addressObject[id].totalInside
-        // );
-      }
-    }
-    //console.log(address.formattedHeld + ": " + trueInside);
     if (trueInside > 0) {
-      //console.log(address.totalInside / address.totalResidents);
-      //console.log(address.formattedHeld + ": " + address.totalInside);
       insidePercentage = trueInside / address.totalResidents;
       insidePercentage = ((1 - insidePercentage) * 100).toFixed(0);
       if (insidePercentage == 0) {
@@ -206,8 +192,6 @@ function addExisting(address, addressObject) {
     }
 
     if (trueParking > 0) {
-      //console.log(address.totalInside / address.totalResidents);
-      //console.log(address.formattedHeld + ": " + address.totalInside);
       parkingPercentage = trueParking / address.totalResidents;
       parkingPercentage = ((1 - parkingPercentage) * 100).toFixed(0);
       if (parkingPercentage == 0) {
@@ -238,16 +222,15 @@ function addExisting(address, addressObject) {
       if (
         markerArray[i].position.lat() === address.latlng.lat &&
         markerArray[i].position.lng() === address.latlng.lng &&
-        image.url !== markerArray[i].getIcon().url
+        getMarkerIcon(totalFlood).url !== markerArray[i].getIcon().url
       ) {
-        markerArray[i].setIcon(image);
+        markerArray[i].setIcon(getMarkerIcon(totalFlood));
       }
     }
   }
 }
 
-addMarker = (id, addressArray) => {
-  let geoC = new google.maps.Geocoder();
+function addNewMarker(id, addressArray) {
   geoC.geocode(
     {
       address: addressArray[id].addressValue
@@ -263,15 +246,10 @@ addMarker = (id, addressArray) => {
       let totalParking = parking;
       let totalFlood = 0;
 
-      //console.log(totalInside);
-
       for (const myID in heldAddresses) {
         if (
           heldAddresses[myID].formattedHeld === results[0].formatted_address
         ) {
-          //totalInside += heldAddresses[myID].totalInside;
-          //console.log(totalInside);
-          //totalParking += heldAddresses[myID].totalParking;
           totalResidents += 1;
         }
       }
@@ -284,7 +262,6 @@ addMarker = (id, addressArray) => {
       };
 
       totalFlood = totalInside + totalParking;
-      //console.log(heldAddresses[id]);
 
       putFormatted(
         JSON.stringify({
@@ -299,38 +276,25 @@ addMarker = (id, addressArray) => {
       );
 
       if (status === "OK") {
-        let image;
-
-        if (totalFlood < 0) {
-          image = {
-            url: "./good.png",
-            scaledSize: new google.maps.Size(25, 25)
-          };
-        } else if (totalFlood > 0) {
-          image = {
-            url: "./bad.png",
-            scaledSize: new google.maps.Size(25, 25)
-          };
-        } else if (totalFlood === 0) {
-          image = {
-            url: "./okay.png",
-            scaledSize: new google.maps.Size(25, 25)
-          };
+        let insidePercentage;
+        let parkingPercentage;
+        let insideHTML;
+        let parkingHTML;
+        let trueInside = 0;
+        let trueParking = 0;
+        for (id in heldAddresses) {
+          if (
+            heldAddresses[id].formattedHeld === results[0].formatted_address
+          ) {
+            trueInside += heldAddresses[id].totalInside;
+            trueParking += heldAddresses[id].totalParking;
+          }
         }
-
-        // if (
-        //   isLocationFree(
-        //     [
-        //       results[0].geometry.location.lat(),
-        //       results[0].geometry.location.lng()
-        //     ],
-        //     markerLatLngArray
-        //   )
-        // ) {
+        totalFlood = trueInside + trueParking;
         var marker = new google.maps.Marker({
           map: map,
           position: results[0].geometry.location,
-          icon: image,
+          icon: getMarkerIcon(totalFlood),
           animation: google.maps.Animation.NONE
         });
         markerArray.push(marker);
@@ -347,27 +311,7 @@ addMarker = (id, addressArray) => {
           `<a href=${search} target = "_blank"> ${results[0].formatted_address} </a>` +
           "<div>";
 
-        let insidePercentage;
-        let parkingPercentage;
-        let insideHTML;
-        let parkingHTML;
-        let trueInside = 0;
-        let trueParking = 0;
-        for (id in heldAddresses) {
-          if (
-            heldAddresses[id].formattedHeld === results[0].formatted_address
-          ) {
-            trueInside += heldAddresses[id].totalInside;
-            trueParking += heldAddresses[id].totalParking;
-            // console.log(
-            //   address.formattedHeld + ": " + addressObject[id].totalInside
-            // );
-          }
-        }
-        //console.log(address.formattedHeld + ": " + trueInside);
         if (trueInside > 0) {
-          //console.log(address.totalInside / address.totalResidents);
-          //console.log(address.formattedHeld + ": " + address.totalInside);
           insidePercentage = trueInside / totalResidents;
           insidePercentage = ((1 - insidePercentage) * 100).toFixed(0);
           if (insidePercentage == 0) {
@@ -386,8 +330,6 @@ addMarker = (id, addressArray) => {
         }
 
         if (trueParking > 0) {
-          //console.log(address.totalInside / address.totalResidents);
-          //console.log(address.formattedHeld + ": " + address.totalInside);
           parkingPercentage = trueParking / totalResidents;
           parkingPercentage = ((1 - parkingPercentage) * 100).toFixed(0);
           if (parkingPercentage == 0) {
@@ -412,27 +354,13 @@ addMarker = (id, addressArray) => {
         marker.addListener("click", function() {
           infowindow.open(map, marker);
         });
-        // } else {
-        //   // Location already has marker, check if icon should be updated
-        //   for (i = 0; i < markerArray.length; i++) {
-        //     if (
-        //       markerArray[i].position.lat() ===
-        //         results[0].geometry.location.lat() &&
-        //       markerArray[i].position.lng() ===
-        //         results[0].geometry.location.lng() &&
-        //       image.url !== markerArray[i].getIcon().url
-        //     ) {
-        //       markerArray[i].setIcon(image);
-        //     }
-        //   }
-        // }
       } else {
         console.log("This didnt work: " + status);
         return null;
       }
     }
   );
-};
+}
 
 isLocationFree = (LatLng, array_of_lat_lng) => {
   for (i = 0; i < array_of_lat_lng.length; i++) {
@@ -445,5 +373,23 @@ isLocationFree = (LatLng, array_of_lat_lng) => {
   }
   return true;
 };
+
+function changeLocation(location) {
+  geoC.geocode(
+    {
+      address: location
+    },
+    function(results, status) {
+      if (status === "OK") {
+        map.setCenter(results[0].geometry.location);
+        document.getElementById("title").innerHTML =
+          "Flooded housing data for " +
+          location.substring(0, location.indexOf(","));
+      } else {
+        console.log("This didnt work" + status);
+      }
+    }
+  );
+}
 
 //module.exports = { isLocationFree, getEverything, addMarker };

@@ -391,9 +391,9 @@ function changeLocation(location) {
     function(results, status) {
       if (status === "OK") {
         map.setCenter(results[0].geometry.location);
-        document.getElementById("title").innerHTML =
-          "Flooded Housing Data for " +
-          location.substring(0, location.indexOf(","));
+        // document.getElementById("title").innerHTML =
+        //   "Flooded Housing Data for " +
+        //   location.substring(0, location.indexOf(","));
       } else {
         console.log("This didnt work" + status);
       }

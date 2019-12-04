@@ -146,10 +146,18 @@ function addExistingMarker(address, addressObject) {
   let parkingHTML;
   let trueInside = 0;
   let trueParking = 0;
+  let insideDMG = 0;
+  let parkingDMG = 0;
   for (id in addressObject) {
     if (addressObject[id].formattedHeld === address.formattedHeld) {
       trueInside += addressObject[id].totalInside;
       trueParking += addressObject[id].totalParking;
+      if (addressObject[id].totalInside === 1) {
+        insideDMG++;
+      }
+      if (addressObject[id].totalParking === 1) {
+        parkingDMG++;
+      }
     }
   }
   totalFlood = trueInside + trueParking;
@@ -176,15 +184,15 @@ function addExistingMarker(address, addressObject) {
       "<div>";
 
     if (trueInside > 0) {
-      insidePercentage = trueInside / address.totalResidents;
-      insidePercentage = ((1 - insidePercentage) * 100).toFixed(0);
+      insidePercentage = insideDMG / address.totalResidents;
+      insidePercentage = (insidePercentage * 100).toFixed(0);
       if (insidePercentage == 0) {
         insidePercentage = 100;
       }
       insideHTML = `<div><b>${insidePercentage}%</b> of ${address.totalResidents} residents reported <b>inside damage</b></div>`;
     } else if (trueInside < 0) {
-      insidePercentage = trueInside / address.totalResidents;
-      insidePercentage = (insidePercentage * -100).toFixed(0);
+      insidePercentage = insideDMG / address.totalResidents;
+      insidePercentage = (insidePercentage * 100).toFixed(0);
       if (insidePercentage == 100) {
         insidePercentage = 0;
       }
@@ -194,15 +202,15 @@ function addExistingMarker(address, addressObject) {
     }
 
     if (trueParking > 0) {
-      parkingPercentage = trueParking / address.totalResidents;
-      parkingPercentage = ((1 - parkingPercentage) * 100).toFixed(0);
+      parkingPercentage = parkingDMG / address.totalResidents;
+      parkingPercentage = (parkingPercentage * 100).toFixed(0);
       if (parkingPercentage == 0) {
         parkingPercentage = 100;
       }
       parkingHTML = `<div><b>${parkingPercentage}%</b> of ${address.totalResidents} residents reported <b>parking lot damage</b></div>`;
     } else if (trueParking < 0) {
-      parkingPercentage = trueParking / address.totalResidents;
-      parkingPercentage = (parkingPercentage * -100).toFixed(0);
+      parkingPercentage = parkingDMG / address.totalResidents;
+      parkingPercentage = (parkingPercentage * 100).toFixed(0);
       if (parkingPercentage == 100) {
         parkingPercentage = 0;
       }
@@ -265,7 +273,6 @@ function addNewMarker(id, addressArray) {
         totalParking,
         totalResidents
       };
-      console.log(heldAddresses[id]);
 
       totalFlood = totalInside + totalParking;
 
@@ -288,12 +295,20 @@ function addNewMarker(id, addressArray) {
         let parkingHTML;
         let trueInside = 0;
         let trueParking = 0;
+        let insideDMG = 0;
+        let parkingDMG = 0;
         for (id in heldAddresses) {
           if (
             heldAddresses[id].formattedHeld === results[0].formatted_address
           ) {
             trueInside += heldAddresses[id].totalInside;
             trueParking += heldAddresses[id].totalParking;
+            if (heldAddresses[id].totalInside === 1) {
+              insideDMG++;
+            }
+            if (heldAddresses[id].totalParking === 1) {
+              parkingDMG++;
+            }
           }
         }
         totalFlood = trueInside + trueParking;
@@ -318,15 +333,15 @@ function addNewMarker(id, addressArray) {
           "<div>";
 
         if (trueInside > 0) {
-          insidePercentage = trueInside / totalResidents;
-          insidePercentage = ((1 - insidePercentage) * 100).toFixed(0);
+          insidePercentage = insideDMG / totalResidents;
+          insidePercentage = (insidePercentage * 100).toFixed(0);
           if (insidePercentage == 0) {
             insidePercentage = 100;
           }
           insideHTML = `<div><b>${insidePercentage}%</b> of ${totalResidents} residents reported <b>inside damage</b></div>`;
         } else if (trueInside < 0) {
-          insidePercentage = trueInside / totalResidents;
-          insidePercentage = (insidePercentage * -100).toFixed(0);
+          insidePercentage = insideDMG / totalResidents;
+          insidePercentage = (insidePercentage * 100).toFixed(0);
           if (insidePercentage == 100) {
             insidePercentage = 0;
           }
@@ -336,15 +351,15 @@ function addNewMarker(id, addressArray) {
         }
 
         if (trueParking > 0) {
-          parkingPercentage = trueParking / totalResidents;
-          parkingPercentage = ((1 - parkingPercentage) * 100).toFixed(0);
+          parkingPercentage = parkingDMG / totalResidents;
+          parkingPercentage = (parkingPercentage * 100).toFixed(0);
           if (parkingPercentage == 0) {
             parkingPercentage = 100;
           }
           parkingHTML = `<div><b>${parkingPercentage}%</b> of ${totalResidents} residents reported <b>parking lot damage</b></div>`;
         } else if (trueParking < 0) {
-          parkingPercentage = trueParking / totalResidents;
-          parkingPercentage = (parkingPercentage * -100).toFixed(0);
+          parkingPercentage = parkingDMG / totalResidents;
+          parkingPercentage = (parkingPercentage * 100).toFixed(0);
           if (parkingPercentage == 100) {
             parkingPercentage = 0;
           }
@@ -352,7 +367,6 @@ function addNewMarker(id, addressArray) {
         } else {
           parkingHTML = `<div> <b>50%</b> of ${totalResidents} residents reported <b>parking lot damage</b></div>`;
         }
-        //console.log(address_goog_link + insidePercentage + parkingPercentage);
         const infowindow = new google.maps.InfoWindow({
           content: address_goog_link + insideHTML + parkingHTML
         });

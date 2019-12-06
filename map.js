@@ -1,8 +1,8 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "https://flood-map42.herokuapp.com"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243
-const formURL = "https://flood-data.herokuapp.com";
+const url = "http://localhost:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243; //"https://flood-map42.herokuapp.com"
+//const formURL = "https://flood-data.herokuapp.com";
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];
@@ -19,7 +19,7 @@ function initMap() {
       {
         address: address
       },
-      function(results, status) {
+      function (results, status) {
         if (status === "OK") {
           map = new google.maps.Map(document.getElementById("map"), {
             zoom: 12,
@@ -62,22 +62,22 @@ doIT = () => {
     }
   });
   setInterval(() => {
-    if (counter < addressesLength) {
-      getFormatted().then(data => {
-        getEverything().then(addresses => {
-          addressesLength = Object.keys(addresses).length;
-          if (addressesLength != Object.keys(data).length) {
-            for (id in addresses) {
-              if (heldAddresses[id] === undefined && go) {
-                addNewMarker(id, addresses);
-                go = false;
-                counter++;
-              }
+    //if (counter < addressesLength) {
+    getFormatted().then(data => {
+      getEverything().then(addresses => {
+        addressesLength = Object.keys(addresses).length;
+        if (addressesLength != Object.keys(data).length) {
+          for (id in addresses) {
+            if (heldAddresses[id] === undefined && go) {
+              addNewMarker(id, addresses);
+              go = false;
+              counter++;
             }
           }
-        });
+        }
       });
-    }
+    });
+    //}
   }, 2000);
 };
 
@@ -85,6 +85,7 @@ async function getEverything() {
   let addresses;
   try {
     const response = await fetch(url + "/map/everything");
+    //console.log(response);
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;
@@ -97,7 +98,7 @@ async function getEverything() {
 async function getFormatted() {
   let addresses;
   try {
-    const response = await fetch(formURL + "/map/formatted");
+    const response = await fetch(url + "/map/formatted");
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;
@@ -109,7 +110,7 @@ async function getFormatted() {
 
 async function putFormatted(newObj) {
   try {
-    await fetch(formURL + "/map/formatted", {
+    await fetch(url + "/map/formatted", {
       method: "POST",
       body: newObj
     });
@@ -186,16 +187,10 @@ function addExistingMarker(address, addressObject) {
     if (trueInside > 0) {
       insidePercentage = insideDMG / address.totalResidents;
       insidePercentage = (insidePercentage * 100).toFixed(0);
-      if (insidePercentage == 0) {
-        insidePercentage = 100;
-      }
       insideHTML = `<div><b>${insidePercentage}%</b> of ${address.totalResidents} residents reported <b>inside damage</b></div>`;
     } else if (trueInside < 0) {
       insidePercentage = insideDMG / address.totalResidents;
       insidePercentage = (insidePercentage * 100).toFixed(0);
-      if (insidePercentage == 100) {
-        insidePercentage = 0;
-      }
       insideHTML = `<div><b>${insidePercentage}%</b> of ${address.totalResidents} residents reported <b>inside damage</b></div>`;
     } else {
       insideHTML = `<div> <b>50%</b> of ${address.totalResidents} residents reported <b>inside damage</b></div>`;
@@ -204,16 +199,10 @@ function addExistingMarker(address, addressObject) {
     if (trueParking > 0) {
       parkingPercentage = parkingDMG / address.totalResidents;
       parkingPercentage = (parkingPercentage * 100).toFixed(0);
-      if (parkingPercentage == 0) {
-        parkingPercentage = 100;
-      }
       parkingHTML = `<div><b>${parkingPercentage}%</b> of ${address.totalResidents} residents reported <b>parking lot damage</b></div>`;
     } else if (trueParking < 0) {
       parkingPercentage = parkingDMG / address.totalResidents;
       parkingPercentage = (parkingPercentage * 100).toFixed(0);
-      if (parkingPercentage == 100) {
-        parkingPercentage = 0;
-      }
       parkingHTML = `<div><b>${parkingPercentage}%</b> of ${address.totalResidents} residents reported <b>parking lot damage</b></div>`;
     } else {
       parkingHTML = `<div> <b>50%</b> of ${address.totalResidents} residents reported <b>parking lot damage</b></div>`;
@@ -223,7 +212,7 @@ function addExistingMarker(address, addressObject) {
       content: address_goog_link + insideHTML + parkingHTML
     });
     infoWindowArray.push(infowindow);
-    marker.addListener("click", function() {
+    marker.addListener("click", function () {
       for (i = 0; i < infoWindowArray.length; i++) {
         infoWindowArray[i].close();
       }
@@ -248,7 +237,7 @@ function addNewMarker(id, addressArray) {
     {
       address: addressArray[id].addressValue
     },
-    function(results, status) {
+    function (results, status) {
       const formattedHeld = results[0].formatted_address;
       const inside = addressArray[id].insideDMGValue;
       const parking = addressArray[id].parkingDMGValue;
@@ -335,16 +324,10 @@ function addNewMarker(id, addressArray) {
         if (trueInside > 0) {
           insidePercentage = insideDMG / totalResidents;
           insidePercentage = (insidePercentage * 100).toFixed(0);
-          if (insidePercentage == 0) {
-            insidePercentage = 100;
-          }
           insideHTML = `<div><b>${insidePercentage}%</b> of ${totalResidents} residents reported <b>inside damage</b></div>`;
         } else if (trueInside < 0) {
           insidePercentage = insideDMG / totalResidents;
           insidePercentage = (insidePercentage * 100).toFixed(0);
-          if (insidePercentage == 100) {
-            insidePercentage = 0;
-          }
           insideHTML = `<div><b>${insidePercentage}%</b> of ${totalResidents} residents reported <b>inside damage</b></div>`;
         } else {
           insideHTML = `<div> <b>50%</b> of ${totalResidents} residents reported <b>inside damage</b></div>`;
@@ -353,16 +336,10 @@ function addNewMarker(id, addressArray) {
         if (trueParking > 0) {
           parkingPercentage = parkingDMG / totalResidents;
           parkingPercentage = (parkingPercentage * 100).toFixed(0);
-          if (parkingPercentage == 0) {
-            parkingPercentage = 100;
-          }
           parkingHTML = `<div><b>${parkingPercentage}%</b> of ${totalResidents} residents reported <b>parking lot damage</b></div>`;
         } else if (trueParking < 0) {
           parkingPercentage = parkingDMG / totalResidents;
           parkingPercentage = (parkingPercentage * 100).toFixed(0);
-          if (parkingPercentage == 100) {
-            parkingPercentage = 0;
-          }
           parkingHTML = `<div><b>${parkingPercentage}%</b> of ${totalResidents} residents reported <b>parking lot damage</b></div>`;
         } else {
           parkingHTML = `<div> <b>50%</b> of ${totalResidents} residents reported <b>parking lot damage</b></div>`;
@@ -371,7 +348,7 @@ function addNewMarker(id, addressArray) {
           content: address_goog_link + insideHTML + parkingHTML
         });
         infoWindowArray.push(infowindow);
-        marker.addListener("click", function() {
+        marker.addListener("click", function () {
           for (i = 0; i < infoWindowArray.length; i++) {
             infoWindowArray[i].close();
           }
@@ -402,7 +379,7 @@ function changeLocation(location) {
     {
       address: location
     },
-    function(results, status) {
+    function (results, status) {
       if (status === "OK") {
         map.setCenter(results[0].geometry.location);
         // document.getElementById("title").innerHTML =

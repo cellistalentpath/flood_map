@@ -2,26 +2,22 @@ body {
   background-color: rgb(190, 190, 190);
 }
 
-/* #heading {
-  /* float: left; */
-/* display: inline-block; */
-/* width: 100%; 
-  border: 3px solid black;
-} */
+#heading {
+  display: inline-block;
+  width: 100%;
+}
 
 #title {
-  /* float: left; */
-  /* border: 3px solid black; */
-  font-size: 2.5vw; /*4.5vh */
+  font-size: 2.5vw;
   text-align: center;
   width: 50%;
   margin: 0 auto;
-  padding-top: 40px;
+  padding-top: 5vh;
 }
 
 #map {
   width: 100%;
-  height: 80.5vh;
+  height: 82.4vh;
   position: fixed;
   padding: 0;
   margin: 0 auto;
@@ -30,13 +26,53 @@ body {
   margin-top: 0px;
 }
 
+#legend {
+  display: inline-block;
+  position: relative;
+  height: auto;
+  vertical-align: middle;
+  padding-left: 1vh;
+}
+
+.legendpics {
+  display: inline-block;
+  height: 6vh;
+  width: 6vh;
+  flex-shrink: 0;
+}
+
+.legendtext {
+  display: inline-block;
+}
+
+/* #dropcontainer {
+  display: inline-block;
+  position: relative;
+} */
+
+#heading {
+  display: inline-block;
+  /* border: 2px solid red; */
+}
+
+/* #space {
+  display: inline-block;
+  width: 62vh;
+} */
+
 .dropdown {
-  /* clear: left; */
-  /* position: fixed; */
-  /* float: right; */
-  /* right: 0;*/
   float: right;
-  /* border: 3px solid black; */
+  clear: right;
+  /* border: 2px solid red; */
+  font-size: 20px;
+  /* margin-top: 1vh; */
+  padding-right: 2vh;
+  /* position: absolute; */
   /* float: right; */
-  padding: 5px;
+  /* bottom: 0;
+  right: 0; */
+  /* padding-right: 2vh;
+  padding-top: 1vh;
+  padding-bottom: 1vh; */
+  /* border: 2px solid red; */
 }

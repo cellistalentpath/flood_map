@@ -11,6 +11,10 @@ let go = true;
 let counter = 0;
 let addressesLength = 1;
 
+let isGoodOn = true;
+let isOkayOn = true;
+let isBadOn = true;
+
 function initMap() {
   geoC = new google.maps.Geocoder();
   function codeAddress(addressIn) {
@@ -174,6 +178,9 @@ function addExistingMarker(address, addressObject) {
     });
 
     markerArray.push(marker);
+    // if (!isGoodOn && marker.getIcon().url === "./good") {
+    //   marker.setVisible(false);
+    // }
     markerLatLngArray.push([address.latlng.lat, address.latlng.lng]);
 
     let encoded = address.formattedHeld.replace(/ /g, "+");
@@ -308,6 +315,15 @@ function addNewMarker(id, addressArray) {
           animation: google.maps.Animation.NONE
         });
         markerArray.push(marker);
+        if (!isGoodOn && marker.getIcon().url === "./good.png") {
+          marker.setVisible(false);
+        }
+        if (!isOkayOn && marker.getIcon().url === "./okay.png") {
+          marker.setVisible(false);
+        }
+        if (!isBadOn && marker.getIcon().url === "./bad.png") {
+          marker.setVisible(false);
+        }
         markerLatLngArray.push([
           results[0].geometry.location.lat(),
           results[0].geometry.location.lng()
@@ -403,15 +419,25 @@ function resetHeight() {
 resetHeight();
 
 toggle = value => {
+  switch (value) {
+    case "good":
+      isGoodOn = !isGoodOn;
+      break;
+    case "okay":
+      isOkayOn = !isOkayOn;
+      break;
+    case "good":
+      isBadOn = !isBadOn;
+      break;
+  }
   for (i = 0; i < markerArray.length; i++) {
-    console.log(document.getElementById(value).style.background);
     if (markerArray[i].getIcon().url === "./" + value + ".png") {
       if (markerArray[i].getVisible()) {
         markerArray[i].setVisible(false);
-        document.getElementById(value).style = "background: #e5e5e5";
+        document.getElementById(value).style = "background: #999999";
       } else {
         markerArray[i].setVisible(true);
-        // document.getElementById(value).style = "background: #ededed";
+        document.getElementById(value).style = "background: ''";
       }
     }
   }

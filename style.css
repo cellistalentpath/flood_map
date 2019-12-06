@@ -20,7 +20,8 @@ body {
 
 #map {
   width: 100%;
-  height: calc(98vh - 3em);
+  height: 100%;
+  /* height: calc(98vh - 3em); */
   position: fixed;
   padding: 0;
   margin: 0 auto;

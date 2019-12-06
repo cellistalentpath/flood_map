@@ -17,7 +17,7 @@ body {
 
 #map {
   width: 100%;
-  height: calc(88.6vh - 40px);
+  height: calc(84.5vh);
   position: fixed;
   padding: 0;
   margin: 0 auto;

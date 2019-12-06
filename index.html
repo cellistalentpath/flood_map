@@ -24,12 +24,18 @@
     <h1 id="title">Flooded Apartments Map</h1>
     <div id="heading">
       <div id="legend">
-        <img src="./good.png" class="legendpics" />
-        <div class="legendtext">Suitable Apartment</div>
-        <img src="./okay.png" class="legendpics" />
-        <div class="legendtext">Possible Flooding</div>
-        <img src="./bad.png" class="legendpics" />
-        <div class="legendtext">Flooding Likely</div>
+        <button class="legendsegment" id="good" onclick="toggle('good')">
+          <img src="./good.png" class="legendpics" />
+          <div class="legendtext">Suitable Apartment</div>
+        </button>
+        <button class="legendsegment" id="okay" onclick="toggle('okay')">
+          <img src="./okay.png" class="legendpics" />
+          <div class="legendtext">Possible Flooding</div>
+        </button>
+        <button class="legendsegment" id="bad" onclick="toggle('bad')">
+          <img src="./bad.png" class="legendpics" />
+          <div class="legendtext">Flooding Likely</div>
+        </button>
       </div>
       <div class="dropdown">
         <button

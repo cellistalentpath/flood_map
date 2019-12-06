@@ -402,4 +402,19 @@ function resetHeight() {
 // called to initially set the height.
 resetHeight();
 
+toggle = value => {
+  for (i = 0; i < markerArray.length; i++) {
+    console.log(document.getElementById(value).style.background);
+    if (markerArray[i].getIcon().url === "./" + value + ".png") {
+      if (markerArray[i].getVisible()) {
+        markerArray[i].setVisible(false);
+        document.getElementById(value).style = "background: #e5e5e5";
+      } else {
+        markerArray[i].setVisible(true);
+        // document.getElementById(value).style = "background: #ededed";
+      }
+    }
+  }
+};
+
 //module.exports = { isLocationFree, getEverything, addMarker };

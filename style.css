@@ -32,6 +32,7 @@ body {
   height: auto;
   vertical-align: middle;
   padding-left: 1vh;
+  padding-bottom: 1vh;
 }
 
 .legendpics {
@@ -43,6 +44,7 @@ body {
 
 .legendtext {
   display: inline-block;
+  padding-right: 2vh;
 }
 
 /* #dropcontainer {
@@ -64,7 +66,7 @@ body {
   float: right;
   clear: right;
   /* border: 2px solid red; */
-  font-size: 20px;
+  font-size: 0.8em;
   /* margin-top: 1vh; */
   padding-right: 2vh;
   /* position: absolute; */
@@ -75,4 +77,10 @@ body {
   padding-top: 1vh;
   padding-bottom: 1vh; */
   /* border: 2px solid red; */
+}
+
+button {
+  width: 25vh;
+  height: 5vh;
+  /* font-size: 0.8em; */
 }

@@ -1,7 +1,7 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "https://flood-map42.herokuapp.com"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243; //"https://flood-map42.herokuapp.com"
+const url = "http://localhost:4243"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243; //"https://flood-map42.herokuapp.com"
 //const formURL = "https://flood-data.herokuapp.com";
 let heldAddresses = {};
 let markerArray = [];
@@ -19,7 +19,7 @@ function initMap() {
       {
         address: address
       },
-      function (results, status) {
+      function(results, status) {
         if (status === "OK") {
           map = new google.maps.Map(document.getElementById("map"), {
             zoom: 12,
@@ -212,7 +212,7 @@ function addExistingMarker(address, addressObject) {
       content: address_goog_link + insideHTML + parkingHTML
     });
     infoWindowArray.push(infowindow);
-    marker.addListener("click", function () {
+    marker.addListener("click", function() {
       for (i = 0; i < infoWindowArray.length; i++) {
         infoWindowArray[i].close();
       }
@@ -237,7 +237,7 @@ function addNewMarker(id, addressArray) {
     {
       address: addressArray[id].addressValue
     },
-    function (results, status) {
+    function(results, status) {
       const formattedHeld = results[0].formatted_address;
       const inside = addressArray[id].insideDMGValue;
       const parking = addressArray[id].parkingDMGValue;
@@ -348,7 +348,7 @@ function addNewMarker(id, addressArray) {
           content: address_goog_link + insideHTML + parkingHTML
         });
         infoWindowArray.push(infowindow);
-        marker.addListener("click", function () {
+        marker.addListener("click", function() {
           for (i = 0; i < infoWindowArray.length; i++) {
             infoWindowArray[i].close();
           }
@@ -379,7 +379,7 @@ function changeLocation(location) {
     {
       address: location
     },
-    function (results, status) {
+    function(results, status) {
       if (status === "OK") {
         map.setCenter(results[0].geometry.location);
         // document.getElementById("title").innerHTML =

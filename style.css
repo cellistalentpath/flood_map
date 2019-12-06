@@ -14,12 +14,13 @@ body {
 #title {
   font-size: 3em;
   text-align: center;
-  margin: 0;
+  margin: 0 auto;
+  padding: 1vh;
 }
 
 #map {
   width: 100%;
-  height: calc(100vh - 3em);
+  height: 100vh;
   position: fixed;
   padding: 0;
   margin: 0 auto;
@@ -34,7 +35,7 @@ body {
   /* height: auto; */
   vertical-align: middle;
   padding-left: 1vh;
-  /* padding-bottom: 1vh; */
+  padding-bottom: 1vh;
 }
 
 .legendpics {

@@ -82,7 +82,7 @@ body {
 }
 
 button {
-  width: 25vh;
-  height: 5vh;
+  max-width: 175px;
+  max-height: 75px;
   /* font-size: 0.8em; */
 }

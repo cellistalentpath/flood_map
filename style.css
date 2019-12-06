@@ -19,7 +19,7 @@ body {
 
 #map {
   width: 100%;
-  height: calc(100vh);
+  height: calc(100vh - 2.5vh);
   position: fixed;
   padding: 0;
   margin: 0 auto;

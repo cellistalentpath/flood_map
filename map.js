@@ -55,7 +55,7 @@ function initMap() {
   // Used to stagger geocoding requests
   setInterval(() => {
     go = true;
-  }, 50);
+  }, 100);
 }
 
 doIT = () => {
@@ -75,7 +75,7 @@ doIT = () => {
             if (heldAddresses[id] === undefined && go) {
               addNewMarker(id, addresses);
               go = false;
-              counter++;
+              // counter++;
             }
           }
         }
@@ -178,9 +178,6 @@ function addExistingMarker(address, addressObject) {
     });
 
     markerArray.push(marker);
-    // if (!isGoodOn && marker.getIcon().url === "./good") {
-    //   marker.setVisible(false);
-    // }
     markerLatLngArray.push([address.latlng.lat, address.latlng.lng]);
 
     let encoded = address.formattedHeld.replace(/ /g, "+");
@@ -426,7 +423,7 @@ toggle = value => {
     case "okay":
       isOkayOn = !isOkayOn;
       break;
-    case "good":
+    case "bad":
       isBadOn = !isBadOn;
       break;
   }

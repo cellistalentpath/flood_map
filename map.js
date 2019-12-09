@@ -227,10 +227,11 @@ function addExistingMarker(address, addressObject) {
     for (i = 0; i < markerArray.length; i++) {
       if (
         markerArray[i].position.lat() === address.latlng.lat &&
-        markerArray[i].position.lng() === address.latlng.lng &&
-        getMarkerIcon(totalFlood).url !== markerArray[i].getIcon().url
+        markerArray[i].position.lng() === address.latlng.lng
       ) {
-        markerArray[i].setIcon(getMarkerIcon(totalFlood));
+        if (getMarkerIcon(totalFlood).url !== markerArray[i].getIcon().url) {
+          markerArray[i].setIcon(getMarkerIcon(totalFlood));
+        }
       }
     }
   }
@@ -305,26 +306,6 @@ function addNewMarker(id, addressArray) {
           }
         }
         totalFlood = trueInside + trueParking;
-        var marker = new google.maps.Marker({
-          map: map,
-          position: results[0].geometry.location,
-          icon: getMarkerIcon(totalFlood),
-          animation: google.maps.Animation.NONE
-        });
-        markerArray.push(marker);
-        if (!isGoodOn && marker.getIcon().url === "./good.png") {
-          marker.setVisible(false);
-        }
-        if (!isOkayOn && marker.getIcon().url === "./okay.png") {
-          marker.setVisible(false);
-        }
-        if (!isBadOn && marker.getIcon().url === "./bad.png") {
-          marker.setVisible(false);
-        }
-        markerLatLngArray.push([
-          results[0].geometry.location.lat(),
-          results[0].geometry.location.lng()
-        ]);
 
         let encoded = results[0].formatted_address.replace(/ /g, "+");
         encoded = encoded.replace(/,/g, "");
@@ -357,16 +338,67 @@ function addNewMarker(id, addressArray) {
         } else {
           parkingHTML = `<div> <b>50%</b> of ${totalResidents} residents reported <b>parking lot damage</b></div>`;
         }
-        const infowindow = new google.maps.InfoWindow({
-          content: address_goog_link + insideHTML + parkingHTML
-        });
-        infoWindowArray.push(infowindow);
-        marker.addListener("click", function() {
-          for (i = 0; i < infoWindowArray.length; i++) {
-            infoWindowArray[i].close();
+
+        if (
+          isLocationFree(
+            [
+              results[0].geometry.location.lat(),
+              results[0].geometry.location.lng()
+            ],
+            markerLatLngArray
+          )
+        ) {
+          var marker = new google.maps.Marker({
+            map: map,
+            position: results[0].geometry.location,
+            icon: getMarkerIcon(totalFlood),
+            animation: google.maps.Animation.NONE
+          });
+          markerArray.push(marker);
+          if (!isGoodOn && marker.getIcon().url === "./good.png") {
+            marker.setVisible(false);
           }
-          infowindow.open(map, marker);
-        });
+          if (!isOkayOn && marker.getIcon().url === "./okay.png") {
+            marker.setVisible(false);
+          }
+          if (!isBadOn && marker.getIcon().url === "./bad.png") {
+            marker.setVisible(false);
+          }
+          markerLatLngArray.push([
+            results[0].geometry.location.lat(),
+            results[0].geometry.location.lng()
+          ]);
+
+          const infowindow = new google.maps.InfoWindow({
+            content: address_goog_link + insideHTML + parkingHTML
+          });
+          infoWindowArray.push(infowindow);
+          marker.addListener("click", function() {
+            for (i = 0; i < infoWindowArray.length; i++) {
+              infoWindowArray[i].close();
+            }
+            infowindow.open(map, marker);
+          });
+        } else {
+          // Location already has marker, check if icon should be updated
+          for (i = 0; i < markerArray.length; i++) {
+            if (
+              markerArray[i].position.lat() ===
+                results[0].geometry.location.lat() &&
+              markerArray[i].position.lng() ===
+                results[0].geometry.location.lng()
+            ) {
+              if (
+                getMarkerIcon(totalFlood).url !== markerArray[i].getIcon().url
+              ) {
+                markerArray[i].setIcon(getMarkerIcon(totalFlood));
+              }
+              infoWindowArray[i].setContent(
+                address_goog_link + insideHTML + parkingHTML
+              );
+            }
+          }
+        }
       } else {
         console.log("This didnt work: " + status);
         return null;

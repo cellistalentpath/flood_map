@@ -1,8 +1,7 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "https://flood-map42.herokuapp.com"; //"http://localhost:4243"; //"http://99.26.184.205:4243"; //http://10.10.15.180:4243; //"https://flood-map42.herokuapp.com"
-//const formURL = "https://flood-data.herokuapp.com";
+const url = "https://flood-map42.herokuapp.com";
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];
@@ -427,9 +426,6 @@ function changeLocation(location) {
     function(results, status) {
       if (status === "OK") {
         map.setCenter(results[0].geometry.location);
-        // document.getElementById("title").innerHTML =
-        //   "Flooded Housing Data for " +
-        //   location.substring(0, location.indexOf(","));
       } else {
         console.log("This didnt work" + status);
       }
@@ -471,5 +467,3 @@ toggle = value => {
     }
   }
 };
-
-//module.exports = { isLocationFree, getEverything, addMarker };

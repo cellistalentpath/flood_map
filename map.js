@@ -442,6 +442,7 @@ function resetHeight() {
 // window.addEventListener("resize", resetHeight);
 // called to initially set the height.
 resetHeight();
+window.addEventListener("resize", resetHeight);
 
 toggle = value => {
   switch (value) {

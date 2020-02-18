@@ -66,5 +66,11 @@ body {
   float: right;
   line-height: 2.5em;
   margin-right: 1vh;
-  /* padding-right: 1vh; */
+  background-color: steelblue;
+  color: white;
+}
+
+#wait_time {
+  padding: 0 0 10px 0;
+  text-align: center;
 }

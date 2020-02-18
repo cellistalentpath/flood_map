@@ -1,7 +1,7 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "https://flood-map42.herokuapp.com";
+const url = "http://localhost:4243";
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];
@@ -29,16 +29,16 @@ function initMap() {
             center: results[0].geometry.location,
             styles: styles
           });
-          let comp_logo = {
-            url: "./tp-logo.png",
-            scaledSize: new google.maps.Size(40, 40)
-          };
-          let marker = new google.maps.Marker({
-            map: map,
-            position: results[0].geometry.location,
-            icon: comp_logo,
-            animation: google.maps.Animation.NONE
-          });
+          // let comp_logo = {
+          //   url: "./tp-logo.png",
+          //   scaledSize: new google.maps.Size(40, 40)
+          // };
+          // let marker = new google.maps.Marker({
+          //   map: map,
+          //   position: results[0].geometry.location,
+          //   icon: comp_logo,
+          //   animation: google.maps.Animation.NONE
+          // });
         } else {
           console.log("This didnt work" + status);
         }
@@ -46,7 +46,7 @@ function initMap() {
     );
   }
   // Companies main office goes here
-  codeAddress("1400 Post Oak Blvd Suite 200, Houston, TX 77056");
+  codeAddress("Houston, TX");
 
   // Let google map load
   new google.maps.event.addDomListener(window, "load", doIT);
@@ -65,7 +65,6 @@ doIT = () => {
     }
   });
   setInterval(() => {
-    //if (counter < addressesLength) {
     getFormatted().then(data => {
       getEverything().then(addresses => {
         addressesLength = Object.keys(addresses).length;
@@ -74,13 +73,11 @@ doIT = () => {
             if (heldAddresses[id] === undefined && go) {
               addNewMarker(id, addresses);
               go = false;
-              // counter++;
             }
           }
         }
       });
     });
-    //}
   }, 2000);
 };
 
@@ -88,7 +85,6 @@ async function getEverything() {
   let addresses;
   try {
     const response = await fetch(url + "/map/everything");
-    //console.log(response);
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;
@@ -439,7 +435,6 @@ function resetHeight() {
   document.documentElement.style.setProperty("--vh", `${vh}px`);
 }
 // reset the height whenever the window's resized
-// window.addEventListener("resize", resetHeight);
 // called to initially set the height.
 resetHeight();
 window.addEventListener("resize", resetHeight);

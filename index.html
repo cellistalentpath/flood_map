@@ -9,33 +9,48 @@
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"
     />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> -->
     <!-- Latest compiled and minified CSS -->
   </head>
   <body>
-    <!-- <a
-      href="https://forms.office.com/Pages/ResponsePage.aspx?id=Em3e8vs9fkmhF52ExFmf60Qh9FBqxPdCiIY7-Ndyk4xUQkExNUFGMzM5N0tNRzZRN0I3RkNSSkc5WC4u"
-      target="_blank"
-      >Click here to take survey!</a
-    > -->
     <h1 id="title">Flooded Apartments Map</h1>
     <div id="heading">
       <div id="legend">
-        <button class="legendsegment" id="good" onclick="toggle('good')">
+        <button
+          class="legendsegment btn btn-default"
+          id="good"
+          onclick="toggle('good')"
+        >
           <img src="./good.png" class="legendpics" />
           <div class="legendtext">Suitable Apartment</div>
         </button>
-        <button class="legendsegment" id="okay" onclick="toggle('okay')">
+        <button
+          class="legendsegment btn btn-default"
+          id="okay"
+          onclick="toggle('okay')"
+        >
           <img src="./okay.png" class="legendpics" />
           <div class="legendtext">Possible Flooding</div>
         </button>
-        <button class="legendsegment" id="bad" onclick="toggle('bad')">
+        <button
+          class="legendsegment btn btn-default"
+          id="bad"
+          onclick="toggle('bad')"
+        >
           <img src="./bad.png" class="legendpics" />
           <div class="legendtext">Flooding Likely</div>
         </button>
+        <a
+          href="https://forms.office.com/Pages/ResponsePage.aspx?id=Em3e8vs9fkmhF52ExFmf60Qh9FBqxPdCiIY7-Ndyk4xUQkExNUFGMzM5N0tNRzZRN0I3RkNSSkc5WC4u"
+          id="survey"
+          class="btn btn-default"
+          target="_blank"
+        >
+          Click here to add some data
+        </a>
       </div>
-      <div class="dropdown">
+      <!-- <div class="dropdown">
         <button
           class="btn btn-primary dropdown-toggle"
           type="button"
@@ -61,7 +76,7 @@
             <a href="#" onclick="changeLocation('Atlanta, GA')">Atlanta, GA</a>
           </li>
         </ul>
-      </div>
+      </div> -->
     </div>
 
     <!--The div element for the map -->
@@ -74,7 +89,7 @@
     <script
       async
       defer
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDrhUvrwMun8LUY2L-g80qk3YNfu3BUcdY&callback=initMap"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRRtra3cQ3pjxkzaau4OEyTmiWCAim1iA&callback=initMap"
     ></script>
   </body>
 </html>

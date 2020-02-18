@@ -86,6 +86,7 @@ async function getEverything() {
   try {
     const response = await fetch(url + "/map/everything");
     addresses = await response.text();
+    console.log(addresses);
     addresses = JSON.parse(addresses);
     return addresses;
   } catch (error) {
@@ -99,6 +100,7 @@ async function getFormatted() {
   try {
     const response = await fetch(url + "/map/formatted");
     addresses = await response.text();
+    console.log(addresses);
     addresses = JSON.parse(addresses);
     return addresses;
   } catch (error) {

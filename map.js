@@ -1,7 +1,7 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "https://flood-map42.herokuapp.com"; //https://flood-map42.herokuapp.com
+const url = "http://localhost:6000"; //https://flood-map42.herokuapp.com
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];
@@ -78,13 +78,13 @@ doIT = () => {
         }
       });
     });
-  }, 10000);
+  }, 2000);
 };
 
 async function getEverything() {
   let addresses;
   try {
-    const response = await fetch(url + "/map/everything");
+    const response = await fetch(url + "/store/everything");
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;

@@ -1,7 +1,7 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "https://flood-map42.herokuapp.com"; //https://flood-map42.herokuapp.com
+const url = "http://71.132.173.1:6942"; //https://flood-map42.herokuapp.com
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];
@@ -84,7 +84,7 @@ doIT = () => {
 async function getEverything() {
   let addresses;
   try {
-    const response = await fetch(url + "/map/everything");
+    const response = await fetch(url + "/store/everything");
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;
@@ -97,7 +97,7 @@ async function getEverything() {
 async function getFormatted() {
   let addresses;
   try {
-    const response = await fetch(url + "/map/formatted");
+    const response = await fetch(url + "/store/formatted");
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;
@@ -109,7 +109,7 @@ async function getFormatted() {
 
 async function putFormatted(newObj) {
   try {
-    await fetch(url + "/map/formatted", {
+    await fetch(url + "/store/formatted", {
       method: "POST",
       body: newObj
     });

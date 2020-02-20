@@ -78,13 +78,13 @@ doIT = () => {
         }
       });
     });
-  }, 2000);
+  }, 10000);
 };
 
 async function getEverything() {
   let addresses;
   try {
-    const response = await fetch(url + "/store/everything");
+    const response = await fetch(url + "/map/everything");
     addresses = await response.text();
     addresses = JSON.parse(addresses);
     return addresses;

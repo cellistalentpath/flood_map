@@ -78,7 +78,7 @@ doIT = () => {
         }
       });
     });
-  }, 10000);
+  }, 2000);
 };
 
 async function getEverything() {

@@ -1,7 +1,7 @@
 // Initialize and add the map
 let map;
 var geoC;
-const url = "http://71.132.173.1:6942"; //https://flood-map42.herokuapp.com
+const url = "https://flood-map42.herokuapp.com"; //https://flood-map42.herokuapp.com
 let heldAddresses = {};
 let markerArray = [];
 let infoWindowArray = [];

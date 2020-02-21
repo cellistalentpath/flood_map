@@ -58,7 +58,9 @@ function initMap() {
 }
 
 doIT = () => {
+  document.body.style.cursor = "wait";
   getFormatted().then(data => {
+    document.body.style.cursor = "default";
     for (address in data) {
       addExistingMarker(data[address], data);
       heldAddresses[data[address].id] = data[address];
